@@ -21,7 +21,7 @@
 
 > 注：若 during 和 times 同时为 0，则视为无限制。
 
-`redis`：
+`redis`：
 
 若 identity = ip，则需要 redis 参数
 
