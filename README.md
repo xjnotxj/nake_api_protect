@@ -1,14 +1,14 @@
 
 # nake_api_protect
  
- `接口请求保护器`，根据 **频次** + **次数** 的自由组合，来限制 api 的恶意请求。
+ `接口请求保护器`，根据 **频率** + **次数** 的自由组合，来限制 api 受到的恶意请求。
  
-####  参数
+####  一、参数
 
 | params    | 取值           | 默认值 |  备注 | 
 | :------------: |:-------------:|:-------------:|:-------------:|
 | project_name      | [string] | "default" |  | 
-| identity      | "session" / "ip" | "session" | ip 用 redis 做持久化 | 
+| identity      | "session" / "ip" | "session" | "ip" 则用 redis 做持久化 | 
 | frequency     |  见下表   |   无限制 |   | 
 | redis   |   见下表  |     |  当 identity="ip" 时必填 | 
 
@@ -19,17 +19,29 @@
 | during      | [integer] | 秒 | 0 | >=0 | 
 | times     |   [integer]  | 次数 | 0 | >=0 | 
 
-注：若 during 和 times 同时为 0，则视为无限制。
+> 注：若 during 和 times 同时为 0，则视为无限制。
 
 `redis`：
-若 identity = ip，则需要 redis
+
+若 identity = ip，则需要 redis 参数
 
 | params    | 取值类型           | 参考值 | 
 | :------------: |:-------------:|:-------------:| 
 | address      | [string]] |   "127.0.0.1" |   
 | port     |  [integer]  |  6379 |   
 
-####  调用
+####  二、方法
+
+| function    | 功能          | 返回值 | 
+| :------------: |:-------------:|:-------------:| 
+| active     | 记录接口请求 | void | 
+| valid      | 判断此次请求是否安全 | true／false | 
+| debug      | 输出请求记录详情，方便 debug | array | 
+| clear     |  清除接口请求记录的次数  |  void  | 
+| destory  |   销毁接口请求保护器  |   void  | 
+
+
+####  三、调用
 
 ```php
 //init nake_api_protect
@@ -59,18 +71,9 @@ $nake_api_protect->active();
 
 ```
 
-####  方法
-
-| function    | 功能          | 返回值 | 
-| :------------: |:-------------:|:-------------:| 
-| active     | 记录接口请求 | void | 
-| valid      | 判断此次请求是否安全 | true／false | 
-| debug      | 输出请求记录详情，方便 debug | array | 
-| clear     |  清除接口请求记录的次数  |  void  | 
-| destory  |   销毁接口请求保护器  |   void  | 
 
 
-####  实例 - 获取手机号
+####  四、实例 - (获取手机号）
 
 ##### 方案1:
 
