@@ -19,27 +19,27 @@ class Nake_api_protect
 
         //check param
         if (!is_string($this->project_name)) {
-            die("[__construct] function error : project_name param must be string.");
+            throw new InvalidArgumentException("[__construct] function error : project_name param must be string.");
         }
         if (!is_string($this->identity) || !($this->identity === "session" || $this->identity === "ip")) {
-            die("[__construct] function error : identity param must be string.");
+            throw new InvalidArgumentException("[__construct] function error : identity param must be string or invalid format.");
         }
 
         if (!is_array($this->frequency) || sizeof($this->frequency) <= 0) {
-            die("[__construct] function error : frequency param must be array.");
+            throw new InvalidArgumentException("[__construct] function error : frequency param must be array.");
         }
 
         if ($this->identity === "ip") {
             if (!$this->redis) {
-                die("[__construct] function error : redis param must be array.");
+                throw new InvalidArgumentException("[__construct] function error : redis param must be array.");
             }
 
             //check param
             if (!is_string($this->redis["address"])) {
-                die("[__construct] function error : redis's address param must be greater than or equal to 0.");
+                throw new InvalidArgumentException("[__construct] function error : redis's address param must be greater than or equal to 0.");
             }
             if (!is_integer($this->redis["port"])) {
-                die("[__construct] function error : redis's port param must be greater than or equal to 0.");
+                throw new InvalidArgumentException("[__construct] function error : redis's port param must be greater than or equal to 0.");
             }
         }
 
@@ -49,17 +49,17 @@ class Nake_api_protect
 
             //check param
             if (!is_integer($this->frequency[$i]["during"])) {
-                die("[__construct] function error : frequency's during param must be integer.");
+                throw new InvalidArgumentException("[__construct] function error : frequency's during param must be integer.");
             }
             if (!is_integer($this->frequency[$i]["times"])) {
-                die("[__construct] function error : frequency's times param must be integer.");
+                throw new InvalidArgumentException("[__construct] function error : frequency's times param must be integer.");
             }
 
             if ($this->frequency[$i]["during"] < 0) {
-                die("[__construct] function error : frequency's during param must be greater than or equal to 0.");
+                throw new InvalidArgumentException("[__construct] function error : frequency's during param must be greater than or equal to 0.");
             }
             if ($this->frequency[$i]["times"] < 0) {
-                die("[__construct] function error : frequency's times param must be greater than or equal to 0.");
+                throw new InvalidArgumentException("[__construct] function error : frequency's times param must be greater than or equal to 0.");
             }
 
             array_push($frequency,
@@ -82,7 +82,7 @@ class Nake_api_protect
             $this->redis_instance = new Redis();
             $this->redis_instance->connect($this->redis["address"], $this->redis["port"]);
             if (!$this->redis_instance) {
-                die("[__construct] function error : create redis instance fail.");
+                throw new RuntimeException("[__construct] function error : create redis instance fail.");
             }
             if (!$this->redis_instance->get($this->project_name . $this->_getClientIP())) {
                 $this->redis_instance->set($this->project_name . $this->_getClientIP(), serialize($frequency));
@@ -98,7 +98,7 @@ class Nake_api_protect
         $frequency = $this->_fetchDate();
 
         if (!$frequency || sizeof($frequency) <= 0) {
-            die("[active] function error : This Nake_api_protect object has been destroyed. Please rebuild it.");
+            throw new RuntimeException("[active] function error : This Nake_api_protect object has been destroyed. Please rebuild it.");
         }
 
         //updateDate
@@ -122,7 +122,7 @@ class Nake_api_protect
         $frequency = $this->_fetchDate();
 
         if (!$frequency || sizeof($frequency) <= 0) {
-            die("[active] function error : This Nake_api_protect object has been destroyed. Please rebuild it.");
+            throw new RuntimeException("[active] function error : This Nake_api_protect object has been destroyed. Please rebuild it.");
         }
 
         //updateDate
@@ -144,7 +144,7 @@ class Nake_api_protect
         $frequency = $this->_fetchDate();
 
         if (!$frequency || sizeof($frequency) <= 0) {
-            die("[clear] function error : This Nake_api_protect object has been destroyed. Please rebuild it.");
+            throw new RuntimeException("[clear] function error : This Nake_api_protect object has been destroyed. Please rebuild it.");
         }
 
         return $frequency;
@@ -156,7 +156,7 @@ class Nake_api_protect
         $frequency = $this->_fetchDate();
 
         if (!$frequency || sizeof($frequency) <= 0) {
-            die("[clear] function error : This Nake_api_protect object has been destroyed. Please rebuild it.");
+            throw new RuntimeException("[clear] function error : This Nake_api_protect object has been destroyed. Please rebuild it.");
         }
 
         //update

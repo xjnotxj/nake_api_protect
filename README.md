@@ -40,8 +40,14 @@
 | clear     |  清除接口请求记录的次数  |  void  | 
 | destory  |   销毁接口请求保护器  |   void  | 
 
+####  三、ERROR
 
-####  三、调用
+| error    | 原因          |
+| :------------: |:-------------:|
+| InvalidArgumentException     | 不合法的参数 |
+| RuntimeException      | 运行时错误 |
+
+####  四、调用
 
 ```php
 //init nake_api_protect
@@ -58,16 +64,25 @@ $nake_api_protect_options = array(
     ],
 );
 
-$nake_api_protect = new Nake_api_protect($nake_api_protect_options); //创建实例对象
- 
-//use
-if (!$nake_api_protect->valid()) {
-    echo var_dump($nake_api_protect->debug());
-    echo "Your request is too frequent.";
-    return;
-}
-$nake_api_protect->active();
-//……
+try {
+    $nake_api_protect = new Nake_api_protect($nake_api_protect_options); //创建实例对象
+
+    //use
+    if (!$nake_api_protect->valid()) {
+        echo var_dump($nake_api_protect->debug());
+        echo "Your request is too frequent.";
+        return;
+    }
+    $nake_api_protect->active();
+    //……
+
+} catch (InvalidArgumentException $e) {
+    throw new InvalidArgumentException($e);
+} catch (RuntimeException $e) {
+    throw new RuntimeException($e);
+} catch (Exception $e) {
+    throw new Exception($e);
+} 
 
 ```
 
